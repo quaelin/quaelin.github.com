@@ -23,22 +23,74 @@
 	}('FrameManager'));
 
 	var
-		VERSION = FrameManager.VERSION = '0.0.1',
+		VERSION = FrameManager.VERSION = '0.0.2',
 		a = FrameManager.a = atom.create(),
+		frames = FrameManager.frames = atom.create(),
 		getScript = $.getScript
 	;
 
 	FrameManager.atom = atom;
 	FrameManager.jQuery = $;
 
+	function nameToID(name) {
+		return 'frame_' + name;
+	}
+
 	FrameManager.load = function (name) {
-		var iframe = $(
-			'<iframe name="' + name + '" src="frame.html?name=' + name + '"/>'
-		).css({
+		frames.once(name, function (frame) {
+			frame.show();
 		});
+		if (frames.has(name)) {
+			return;
+		}
+
+		var
+			frameID = nameToID(name),
+			frameJQ = $('<div id="' + frameID + '">' +
+				'<iframe name="' + name + '" src="frame.html?name=' + name + '"/>' +
+				'</div>').css({}),
+			frame = atom.create().mixin({
+				id: frameID,
+				name: name,
+				jq: frameJQ,
+				show: function () {
+					frame.set('show', new Date());
+				}
+			}),
+			iframe = frameJQ.find('iframe').css({
+				height: '100%',
+				width: '100%'
+			}),
+			lastShow
+		;
+
+		frame.on('show', function (show) {
+			var currentFrame = FrameManager.currentFrame;
+			if (currentFrame) {
+				if (currentFrame.name === name) {
+					return;
+				}
+				currentFrame.jq.animate({
+					'bottom': '100px',
+					'top': '100px',
+					'z-index': '1'
+				}, 'fast');
+			}
+			frameJQ.animate({
+				'bottom': '0',
+				'left': '0',
+				'right': '0',
+				'top': '20px',
+				'z-index': '2'
+			}, 'medium');
+			FrameManager.currentFrame = frame;
+		});
+
 		a.once('mainDiv', function (mainDiv) {
-			mainDiv.append(iframe);
+			mainDiv.append(frameJQ);
 		});
+
+		frames.set(name, frame);
 	};
 
 	$(function () {
@@ -52,11 +104,20 @@
 	});
 
 	a.once('mainDiv', function (mainDiv) {
-		mainDiv.append($('<div>' + VERSION + '</div>').css({
+		var ver = $('<div>FrameManager ' + VERSION + '</div>').css({
 			'bottom': '0',
+			'color': '#aaa',
+			'opacity': '0',
 			'position': 'absolute',
 			'right': '0'
-		}));
+		}).hover(
+			function () {
+				ver.animate({ opacity: '1' });
+			},
+			function () {
+				ver.animate({ opacity: '0' });
+			}
+		).appendTo(mainDiv);
 	});
 
 }(atom, jQuery));
