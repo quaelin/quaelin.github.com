@@ -23,7 +23,7 @@
 	}('FrameManager'));
 
 	var
-		VERSION = FrameManager.VERSION = '0.0.2',
+		VERSION = FrameManager.VERSION = '0.0.3',
 		a = FrameManager.a = atom.create(),
 		frames = FrameManager.frames = atom.create(),
 		getScript = $.getScript
@@ -48,7 +48,15 @@
 			frameID = nameToID(name),
 			frameJQ = $('<div id="' + frameID + '">' +
 				'<iframe name="' + name + '" src="frame.html?name=' + name + '"/>' +
-				'</div>').css({}),
+			'</div>').css({
+				'background': 'white',
+				'border': '1px solid #ccc',
+				'bottom': '0',
+				'left': '0',
+				'position': 'absolute',
+				'right': '0',
+				'top': '0'
+			}),
 			frame = atom.create().mixin({
 				id: frameID,
 				name: name,
@@ -58,6 +66,7 @@
 				}
 			}),
 			iframe = frameJQ.find('iframe').css({
+				border: 'none',
 				height: '100%',
 				width: '100%'
 			}),
@@ -72,15 +81,18 @@
 				}
 				currentFrame.jq.animate({
 					'bottom': '100px',
+					'opacity': '0.7',
+					'right': '5px',
 					'top': '100px',
 					'z-index': '1'
 				}, 'fast');
 			}
 			frameJQ.animate({
-				'bottom': '0',
-				'left': '0',
-				'right': '0',
-				'top': '20px',
+				'bottom': '15px',
+				'left': '15px',
+				'opacity': '1',
+				'right': '100px',
+				'top': '30px',
 				'z-index': '2'
 			}, 'medium');
 			FrameManager.currentFrame = frame;

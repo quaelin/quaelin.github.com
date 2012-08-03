@@ -40,7 +40,7 @@
 
 	a.need('FrameManager', function (FrameManager) {
 		FrameManager.load('twitter');
+		FrameManager.load('links');
 	});
-
 
 }(atom, jQuery));
