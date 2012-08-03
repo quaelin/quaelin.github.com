@@ -8,7 +8,7 @@
 	;
 
 	$(function () {
-		$(document.body).append('Foo');
+		$(document.body).append('Foo 2');
 	});
 
 }(Frame));
