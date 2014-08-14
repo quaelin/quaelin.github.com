@@ -26,7 +26,7 @@
 		a = qdotg.a = atom.create(),
 		each = $.each,
 		getScript = $.getScript,
-		VERSION = qdotg.VERSION = '0.0.2'
+		VERSION = qdotg.VERSION = '0.0.3'
 	;
 
 	qdotg.atom = atom;
